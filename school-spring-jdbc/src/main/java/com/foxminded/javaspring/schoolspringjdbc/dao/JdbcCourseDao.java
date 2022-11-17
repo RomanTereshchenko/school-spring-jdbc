@@ -2,9 +2,11 @@ package com.foxminded.javaspring.schoolspringjdbc.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 
+@Repository
 public class JdbcCourseDao implements CourseDao {
 	
 	@Autowired

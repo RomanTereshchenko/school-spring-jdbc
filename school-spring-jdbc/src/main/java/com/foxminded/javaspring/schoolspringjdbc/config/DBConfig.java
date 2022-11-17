@@ -30,7 +30,7 @@ public class DBConfig {
 		return DriverManager.getConnection(schoolURL, schoolUsername, schoolPassword);
 	}
 
-	static String getProperty(String propertyName) throws RuntimeException {
+	private static String getProperty(String propertyName) throws RuntimeException {
 
 		String propertyValue = null;
 

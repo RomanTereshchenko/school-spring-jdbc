@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SchoolSpringJdbcApplication {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(SchoolSpringJdbcApplication.class, args);
+
 	}
 
 }
