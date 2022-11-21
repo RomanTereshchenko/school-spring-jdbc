@@ -13,8 +13,12 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 @Repository
 public class JdbcGroupDao implements GroupDao {
 
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	public JdbcGroupDao (JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	public void addAllGroupsToDB() {
 		Controller.groups.forEach(group -> addGroupToDB(group.getGroupName()));

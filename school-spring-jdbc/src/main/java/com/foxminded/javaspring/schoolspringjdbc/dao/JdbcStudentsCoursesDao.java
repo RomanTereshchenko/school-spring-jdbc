@@ -14,8 +14,12 @@ import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
 @Repository
 public class JdbcStudentsCoursesDao implements StudentsCoursesDao {
 
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	public JdbcStudentsCoursesDao (JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	public void addStudentsCoursesAssignmentsToDB() {
 		Controller.students.forEach(student -> addOneStudentCoursesAssignmentsToDB(student.getStudentID()));

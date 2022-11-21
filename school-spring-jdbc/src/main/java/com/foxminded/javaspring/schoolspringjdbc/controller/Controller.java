@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcCourseDao;
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcStudentDao;
@@ -19,24 +23,42 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
 
+@RestController
+
 public class Controller {
 
-	private JdbcTablesDao jdbcTablesDao = new JdbcTablesDao();
-	private GroupGenerator groupGenerator = new GroupGenerator();
-	private JdbcGroupDao jdbcGroupDao = new JdbcGroupDao();
-	private JdbcCourseDao jdbcCourseDao = new JdbcCourseDao();
-	private StudentGenerator studentGenerator = new StudentGenerator();
-	private JdbcStudentDao jdbcStudentDao = new JdbcStudentDao();
-	private JdbcStudentsCoursesDao jdbcStudentsCoursesDao = new JdbcStudentsCoursesDao();
-	private CourseGenerator courseGenerator = new CourseGenerator();
+	private JdbcTablesDao jdbcTablesDao;
+	private GroupGenerator groupGenerator;
+	private JdbcGroupDao jdbcGroupDao;
+	private JdbcCourseDao jdbcCourseDao;
+	private StudentGenerator studentGenerator;
+	private JdbcStudentDao jdbcStudentDao;
+	private JdbcStudentsCoursesDao jdbcStudentsCoursesDao;
+	private CourseGenerator courseGenerator;
 	private Scanner scan = new Scanner(System.in);
 	private int groupsNumber = 10;
 	private int studentsNumber = 200;
-	
+
 	public static List<Group> groups = new ArrayList<>();
 	public static List<Course> courses = new ArrayList<>();
 	public static List<Student> students = new ArrayList<>();
 
+	@Autowired
+	public Controller(JdbcTablesDao jdbcTablesDao, GroupGenerator groupGenerator, JdbcGroupDao jdbcGroupDao,
+			JdbcCourseDao jdbcCourseDao, StudentGenerator studentGenerator, JdbcStudentDao jdbcStudentDao,
+			JdbcStudentsCoursesDao jdbcStudentsCoursesDao, CourseGenerator courseGenerator) {
+		super();
+		this.jdbcTablesDao = jdbcTablesDao;
+		this.groupGenerator = groupGenerator;
+		this.jdbcGroupDao = jdbcGroupDao;
+		this.jdbcCourseDao = jdbcCourseDao;
+		this.studentGenerator = studentGenerator;
+		this.jdbcStudentDao = jdbcStudentDao;
+		this.jdbcStudentsCoursesDao = jdbcStudentsCoursesDao;
+		this.courseGenerator = courseGenerator;
+	}
+
+	@RequestMapping("/startup")
 	public void startUp() {
 		jdbcTablesDao.createSchemaAndTables();
 		groups = groupGenerator.generateNGroups(groupsNumber);
@@ -51,8 +73,9 @@ public class Controller {
 		jdbcStudentsCoursesDao.addStudentsCoursesAssignmentsToDB();
 	}
 
+	@RequestMapping("/menu")
 	public void menu() {
-		String[] options = { "1 - Find all groups with less or equal students� number",
+		String[] options = { "1 - Find all groups with less or equal students' number",
 				"2 - Find all students related to the course with the given name", "3 - Add a new student",
 				"4 - Delete a student by the STUDENT_ID", "5 - Add a student to the course (from a list)",
 				"6 - Remove the student from one of their courses", "7 - Exit", };
@@ -83,7 +106,7 @@ public class Controller {
 				default:
 					exit(0);
 				}
-			} catch (Exception e) {
+			} catch (IllegalArgumentException e) {
 				System.out.println("Please, enter an integer value between 1 and " + options.length);
 				scan.next();
 			}
@@ -107,7 +130,18 @@ public class Controller {
 		System.out.println("Enter the course ID");
 		int courseIdToRemove = scan.nextInt();
 		scan.nextLine();
-		jdbcStudentsCoursesDao.deleteStudentFromCourse(studentIdToRemove, courseIdToRemove);
+		List<StudentCourse> studentCourses = jdbcStudentsCoursesDao.getCoursesOfStudent(studentIdToRemove);
+		List<Integer> studentCoursesIDs = new ArrayList<>();
+		for (StudentCourse studentCourse : studentCourses) {
+			studentCoursesIDs.add(studentCourse.getCourseId());
+		}
+		if (studentCoursesIDs.contains(courseIdToRemove)) {
+			System.out.println("This course is not assigned to this student. Choose other student and course");
+		} else {
+			jdbcStudentsCoursesDao.deleteStudentFromCourse(studentIdToRemove, courseIdToRemove);
+			System.out.println("Student with ID " + studentIdToRemove + " is removed from the course "
+					+ courseIdToRemove + " in School database");
+		}
 	}
 
 	private void addStudentToCourse() {
@@ -124,10 +158,12 @@ public class Controller {
 			studentCoursesIDs.add(studentCourse.getCourseId());
 		}
 		if (studentCoursesIDs.contains(courseId)) {
-			System.out.println("This student is already addigned to this course. Choose other student and course.");
-		} else
+			System.out.println("This student is already assigned to this course. Choose other student and course.");
+		} else {
 			jdbcStudentsCoursesDao.addStudentCourseAssignmentInDB(studentId, courseId);
-		System.out.println();
+			System.out.println("Course with ID " + courseId + " is assigned to student with ID " + studentId
+					+ " in School database");
+		}
 	}
 
 	private void deleteStudent() {
@@ -136,6 +172,7 @@ public class Controller {
 		int studentIdToDelete = scan.nextInt();
 		scan.nextLine();
 		jdbcStudentDao.deleteStudentFromDB(studentIdToDelete);
+		System.out.println("Student with ID " + studentIdToDelete + " is deleted from School database");
 		System.out.println();
 	}
 
@@ -147,6 +184,7 @@ public class Controller {
 		System.out.println("Enter the student last name");
 		String lastName = scan.nextLine();
 		jdbcStudentDao.addStudentToDB(firstName, lastName);
+		System.out.println("New student " + firstName + " " + lastName + " is added to School database");
 		System.out.println();
 	}
 
@@ -156,7 +194,7 @@ public class Controller {
 				"Enter a course name (Mathematics, Science, Health, Handwriting, Art, Music, Leadership, Speech, English, Algebra)");
 		scan.nextLine();
 		String courseName = scan.nextLine();
-		List<Student> studentsOfCourse = jdbcStudentDao.getStudentsRelatedToCourse(courseName);
+		List<Student> studentsOfCourse = jdbcStudentDao.findStudentsRelatedToCourse(courseName);
 		for (Student student : studentsOfCourse) {
 			System.out.println(student.getFirstName() + " " + student.getLastName());
 		}

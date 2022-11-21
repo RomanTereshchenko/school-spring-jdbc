@@ -13,8 +13,12 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 @Repository
 public class JdbcStudentDao implements StudentDao {
 
-	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	public JdbcStudentDao (JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	public void addStudentsToDB() {
 		Controller.students.forEach(student -> addStudentToDB((student.getFirstName()), (student.getLastName())));
@@ -48,7 +52,7 @@ public class JdbcStudentDao implements StudentDao {
 	}
 
 	@Override
-	public List<Student> getStudentsRelatedToCourse(String courseName) {
+	public List<Student> findStudentsRelatedToCourse(String courseName) {
 		return jdbcTemplate.query(
 				"SELECT school.students.student_id, school.students.first_name, school.students.last_name FROM school.students "
 						+ "INNER JOIN school.students_courses ON school.students.student_id = school.students_courses.student_id "

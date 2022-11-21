@@ -12,6 +12,6 @@ public interface StudentDao {
 	
 	int addGroupIDToStudentInDB (int groupID, String studentFirstName, String studentLastName);
 	
-	List<Student> getStudentsRelatedToCourse(String courseName);
+	List<Student> findStudentsRelatedToCourse(String courseName);
 
 }

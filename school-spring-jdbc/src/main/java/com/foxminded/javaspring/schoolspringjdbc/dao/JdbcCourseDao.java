@@ -8,9 +8,13 @@ import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 
 @Repository
 public class JdbcCourseDao implements CourseDao {
+
+	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	public JdbcCourseDao (JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 	
 	public void addAllCoursesToDB() {
 

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.stereotype.Service;
+
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 
+@Service
 public class GroupGenerator {
 
 	private Random random = new Random();

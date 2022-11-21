@@ -5,8 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+
 public class StudentCourse {
 
 	int studentId;
 	int courseId;
+
 }

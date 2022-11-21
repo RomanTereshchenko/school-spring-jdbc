@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import org.springframework.stereotype.Service;
+
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 
+@Service
 public class StudentGenerator {
 
 	private Random random = new Random();
@@ -45,7 +48,6 @@ public class StudentGenerator {
 		while ((numberOfStudentsInGroup < limitOfStudentsInGroup)
 				&& (nextUnassignedStudentID < Controller.students.size())) {
 			Controller.students.get(nextUnassignedStudentID).setGroupID(groupID);
-			System.out.println("Student " + nextUnassignedStudentID + " assigned to group " + groupID);
 			numberOfStudentsInGroup++;
 			nextUnassignedStudentID++;
 		}
