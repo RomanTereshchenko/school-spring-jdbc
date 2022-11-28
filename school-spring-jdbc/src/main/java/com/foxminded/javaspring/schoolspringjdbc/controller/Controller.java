@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcCourseDao;
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
@@ -23,7 +22,7 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
 
-@RestController
+@Component
 
 public class Controller {
 
@@ -58,7 +57,6 @@ public class Controller {
 		this.courseGenerator = courseGenerator;
 	}
 
-	@RequestMapping("/startup")
 	public void startUp() {
 		jdbcTablesDao.createSchemaAndTables();
 		groups = groupGenerator.generateNGroups(groupsNumber);
@@ -73,7 +71,6 @@ public class Controller {
 		jdbcStudentsCoursesDao.addStudentsCoursesAssignmentsToDB();
 	}
 
-	@RequestMapping("/menu")
 	public void menu() {
 		String[] options = { "1 - Find all groups with less or equal students' number",
 				"2 - Find all students related to the course with the given name", "3 - Add a new student",
@@ -135,7 +132,7 @@ public class Controller {
 		for (StudentCourse studentCourse : studentCourses) {
 			studentCoursesIDs.add(studentCourse.getCourseId());
 		}
-		if (studentCoursesIDs.contains(courseIdToRemove)) {
+		if (!studentCoursesIDs.contains(courseIdToRemove)) {
 			System.out.println("This course is not assigned to this student. Choose other student and course");
 		} else {
 			jdbcStudentsCoursesDao.deleteStudentFromCourse(studentIdToRemove, courseIdToRemove);
