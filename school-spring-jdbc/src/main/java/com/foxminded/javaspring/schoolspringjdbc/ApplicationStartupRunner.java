@@ -9,20 +9,15 @@ import org.springframework.stereotype.Component;
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 
 @Component
+@ConditionalOnProperty(prefix = "conditional", name = "property")
 public class ApplicationStartupRunner implements CommandLineRunner {
 	
 	private Controller controller;
 
-	@Autowired
+//	@Autowired
 	public ApplicationStartupRunner(Controller controller) {
 		super();
 		this.controller = controller;
-	}
-
-	@Bean(name = "startupRunner")
-	@ConditionalOnProperty(prefix = "conditional", name = "property")
-	public ApplicationStartupRunner applicationStartupRunner() {
-		return new ApplicationStartupRunner(controller);
 	}
 	
 	@Override

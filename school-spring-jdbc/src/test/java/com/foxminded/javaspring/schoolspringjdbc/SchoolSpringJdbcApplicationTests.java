@@ -6,20 +6,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcCourseDao;
+import org.springframework.test.context.jdbc.Sql;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureMockMvc
-
 class SchoolSpringJdbcApplicationTests {
 
 	@Autowired
 	JdbcCourseDao jdbcCourseDao;
 
+	@Sql(statements = "INSERT INTO school.courses(course_name) VALUES ('math');")
 	@Test
-	@Sql("INSERT INTO school.courses(course_name) VALUES (?);")
 	void whenApplicationIsRunning_thenaddCourseToDBReturnsCorrectCountOfCoursesAddedToDB() {
 		assertEquals(1, jdbcCourseDao.addCourseToDB("TestCourse"));
 	}

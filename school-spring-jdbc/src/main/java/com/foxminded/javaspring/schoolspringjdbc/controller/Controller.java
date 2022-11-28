@@ -23,7 +23,6 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
 
 @Component
-
 public class Controller {
 
 	private JdbcTablesDao jdbcTablesDao;
@@ -59,16 +58,16 @@ public class Controller {
 
 	public void startUp() {
 		jdbcTablesDao.createSchemaAndTables();
-		groups = groupGenerator.generateNGroups(groupsNumber);
-		jdbcGroupDao.addAllGroupsToDB();
-		courses = courseGenerator.generateCourses();
-		jdbcCourseDao.addAllCoursesToDB();
-		students = studentGenerator.generateNStudents(studentsNumber);
-		jdbcStudentDao.addStudentsToDB();
-		studentGenerator.assignAllGroupsToAllItsStudents();
-		jdbcStudentDao.addGroupIDToAllTheirStudentsInDB();
-		studentGenerator.assignCoursesToAllStudents();
-		jdbcStudentsCoursesDao.addStudentsCoursesAssignmentsToDB();
+//		groups = groupGenerator.generateNGroups(groupsNumber);
+//		jdbcGroupDao.addAllGroupsToDB();
+//		courses = courseGenerator.generateCourses();
+//		jdbcCourseDao.addAllCoursesToDB();
+//		students = studentGenerator.generateNStudents(studentsNumber);
+//		jdbcStudentDao.addStudentsToDB();
+//		studentGenerator.assignAllGroupsToAllItsStudents();
+//		jdbcStudentDao.addGroupIDToAllTheirStudentsInDB();
+//		studentGenerator.assignCoursesToAllStudents();
+//		jdbcStudentsCoursesDao.addStudentsCoursesAssignmentsToDB();
 	}
 
 	public void menu() {
