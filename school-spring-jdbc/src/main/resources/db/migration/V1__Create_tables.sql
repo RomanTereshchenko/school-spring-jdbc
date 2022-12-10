@@ -1,7 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS school;
 
-DROP TABLE IF EXISTS school.courses CASCADE;
-
 CREATE TABLE IF NOT EXISTS school.courses
 (
 	course_id SERIAL PRIMARY KEY,
@@ -9,15 +7,11 @@ CREATE TABLE IF NOT EXISTS school.courses
     course_description VARCHAR(200)
 );
 
-DROP TABLE IF EXISTS school.groups CASCADE;
-
 CREATE TABLE IF NOT EXISTS school.groups
 (
     group_id SERIAL PRIMARY KEY,
     group_name VARCHAR(5) NOT NULL
 );
-
-DROP TABLE IF EXISTS school.students CASCADE;
 
 CREATE TABLE IF NOT EXISTS school.students
 (
@@ -29,8 +23,6 @@ CREATE TABLE IF NOT EXISTS school.students
 		REFERENCES school.groups(group_id)
 			ON DELETE SET NULL
 );
-
-DROP TABLE IF EXISTS school.students_courses CASCADE;
 
 CREATE TABLE IF NOT EXISTS school.students_courses
 (

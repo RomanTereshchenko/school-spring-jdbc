@@ -57,9 +57,10 @@ public class Controller {
 	}
 
 	public void startUp() {
-		jdbcTablesDao.createSchemaAndTables();
-//		groups = groupGenerator.generateNGroups(groupsNumber);
-//		jdbcGroupDao.addAllGroupsToDB();
+//		jdbcTablesDao.truncateTables();
+		groups = groupGenerator.generateNGroups(groupsNumber);
+		System.out.println(groups);
+		jdbcGroupDao.addAllGroupsToDB();
 //		courses = courseGenerator.generateCourses();
 //		jdbcCourseDao.addAllCoursesToDB();
 //		students = studentGenerator.generateNStudents(studentsNumber);
