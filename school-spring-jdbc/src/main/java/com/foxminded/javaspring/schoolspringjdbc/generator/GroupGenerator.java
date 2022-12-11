@@ -23,7 +23,6 @@ public class GroupGenerator {
 			group.setGroupName(generateGroupName());
 			groupsLocal.add(group);
 		}
-		
 		System.out.println("Groups generated");
 		return groupsLocal;
 	}

@@ -8,6 +8,8 @@ public interface GroupDao {
 	
 	int addGroupToDB(String groupName);
 	
+	List<Group> selectCurrentGroups();
+	
 	List<Group> selectGroupsByStudentsCount (int studentsCount);
 
 }

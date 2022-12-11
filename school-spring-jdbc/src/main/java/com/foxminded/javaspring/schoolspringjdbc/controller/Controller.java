@@ -57,18 +57,17 @@ public class Controller {
 	}
 
 	public void startUp() {
-//		jdbcTablesDao.truncateTables();
+		jdbcTablesDao.truncateTables();
 		groups = groupGenerator.generateNGroups(groupsNumber);
-		System.out.println(groups);
 		jdbcGroupDao.addAllGroupsToDB();
-//		courses = courseGenerator.generateCourses();
-//		jdbcCourseDao.addAllCoursesToDB();
-//		students = studentGenerator.generateNStudents(studentsNumber);
-//		jdbcStudentDao.addStudentsToDB();
-//		studentGenerator.assignAllGroupsToAllItsStudents();
-//		jdbcStudentDao.addGroupIDToAllTheirStudentsInDB();
-//		studentGenerator.assignCoursesToAllStudents();
-//		jdbcStudentsCoursesDao.addStudentsCoursesAssignmentsToDB();
+		courses = courseGenerator.generateCourses();
+		jdbcCourseDao.addAllCoursesToDB();
+		students = studentGenerator.generateNStudents(studentsNumber);
+		jdbcStudentDao.addStudentsToDB();
+		studentGenerator.assignAllGroupsToAllItsStudents();
+		jdbcStudentDao.addGroupIDToAllTheirStudentsInDB();
+		studentGenerator.assignCoursesToAllStudents();
+		jdbcStudentsCoursesDao.addStudentsCoursesAssignmentsToDB();
 	}
 
 	public void menu() {

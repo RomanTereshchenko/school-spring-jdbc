@@ -7,15 +7,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
+import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 
 @Service
 public class StudentGenerator {
 
+	private JdbcGroupDao jdbcGroupDao;
 	private Random random = new Random();
 	private int nextUnassignedStudentID = 0;
 	private List<String> studentFirstNames = Arrays.asList("Lexi", "Elouise", "Wilbur", "Glenda", "Judah", "Salahuddin",
@@ -25,6 +28,12 @@ public class StudentGenerator {
 	"Garrett", "Peralta", "Mcknight", "O'Quinn", "Simons", "Kelley", "Trejo", "Dougherty", "Palacios", "Murphy",
 	"Gordon", "Mcgee", "Strong", "Philip");
 	
+	@Autowired	
+	public StudentGenerator(JdbcGroupDao jdbcGroupDao) {
+		super();
+		this.jdbcGroupDao = jdbcGroupDao;
+	}
+
 	public List<Student> generateNStudents(int countToGenerate) {
 		List<Student> studentsLocal = new ArrayList<>();
 		IntStream.rangeClosed(1, countToGenerate)
@@ -35,11 +44,19 @@ public class StudentGenerator {
 		return studentsLocal;
 	}
 
+//	public void assignAllGroupsToAllItsStudents() {
+//		while (nextUnassignedStudentID < Controller.students.size()) {
+//			IntStream.rangeClosed(1, Controller.groups.size()).forEach(this::assignGroupToStudents);
+//		}
+//		System.out.println("Students assigned with groups");
+//	}
+	
 	public void assignAllGroupsToAllItsStudents() {
 		while (nextUnassignedStudentID < Controller.students.size()) {
-			IntStream.rangeClosed(1, Controller.groups.size()).forEach(this::assignGroupToStudents);
+			jdbcGroupDao.selectCurrentGroups().forEach(group -> assignGroupToStudents(group.getGroupID()));
 		}
 		System.out.println("Students assigned with groups");
+		System.out.println(jdbcGroupDao.selectCurrentGroups());
 	}
 
 	private void assignGroupToStudents(int groupID) {
