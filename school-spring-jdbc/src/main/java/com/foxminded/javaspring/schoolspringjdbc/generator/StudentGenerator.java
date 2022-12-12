@@ -7,56 +7,39 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
-import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 
 @Service
 public class StudentGenerator {
 
-	private JdbcGroupDao jdbcGroupDao;
 	private Random random = new Random();
 	private int nextUnassignedStudentID = 0;
 	private List<String> studentFirstNames = Arrays.asList("Lexi", "Elouise", "Wilbur", "Glenda", "Judah", "Salahuddin",
-	"Juliet", "Tanner", "Luella", "Enid", "Hadiya", "Rares", "Bryan", "Patsy", "Eshan", "Lester", "Bentley",
-	"Yu", "Finlay", "Sylvie");
+			"Juliet", "Tanner", "Luella", "Enid", "Hadiya", "Rares", "Bryan", "Patsy", "Eshan", "Lester", "Bentley",
+			"Yu", "Finlay", "Sylvie");
 	private List<String> studentLastNames = Arrays.asList("Ferry", "Buck", "Moody", "Craft", "Ridley", "Aguilar",
-	"Garrett", "Peralta", "Mcknight", "O'Quinn", "Simons", "Kelley", "Trejo", "Dougherty", "Palacios", "Murphy",
-	"Gordon", "Mcgee", "Strong", "Philip");
-	
-	@Autowired	
-	public StudentGenerator(JdbcGroupDao jdbcGroupDao) {
-		super();
-		this.jdbcGroupDao = jdbcGroupDao;
-	}
+			"Garrett", "Peralta", "Mcknight", "O'Quinn", "Simons", "Kelley", "Trejo", "Dougherty", "Palacios", "Murphy",
+			"Gordon", "Mcgee", "Strong", "Philip");
 
 	public List<Student> generateNStudents(int countToGenerate) {
 		List<Student> studentsLocal = new ArrayList<>();
 		IntStream.rangeClosed(1, countToGenerate)
-				.forEach(studentID -> studentsLocal.add(new Student(studentID,
-						studentFirstNames.get(random.nextInt(studentFirstNames.size())),
-						studentLastNames.get(random.nextInt(studentLastNames.size())))));
+				.forEach(studentID -> studentsLocal
+						.add(new Student(studentID, studentFirstNames.get(random.nextInt(studentFirstNames.size())),
+								studentLastNames.get(random.nextInt(studentLastNames.size())))));
 		System.out.println("Students generated");
 		return studentsLocal;
 	}
 
-//	public void assignAllGroupsToAllItsStudents() {
-//		while (nextUnassignedStudentID < Controller.students.size()) {
-//			IntStream.rangeClosed(1, Controller.groups.size()).forEach(this::assignGroupToStudents);
-//		}
-//		System.out.println("Students assigned with groups");
-//	}
-	
 	public void assignAllGroupsToAllItsStudents() {
 		while (nextUnassignedStudentID < Controller.students.size()) {
-			jdbcGroupDao.selectCurrentGroups().forEach(group -> assignGroupToStudents(group.getGroupID()));
+			IntStream.rangeClosed(1, Controller.groups.size()).forEach(this::assignGroupToStudents);
 		}
 		System.out.println("Students assigned with groups");
-		System.out.println(jdbcGroupDao.selectCurrentGroups());
 	}
 
 	private void assignGroupToStudents(int groupID) {

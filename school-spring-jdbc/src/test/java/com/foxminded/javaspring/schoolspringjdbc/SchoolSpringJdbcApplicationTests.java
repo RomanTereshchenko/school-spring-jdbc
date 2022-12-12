@@ -4,23 +4,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcCourseDao;
-import org.springframework.test.context.jdbc.Sql;
+import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 class SchoolSpringJdbcApplicationTests {
 
 	@Autowired
 	JdbcCourseDao jdbcCourseDao;
+	
+	@Autowired
+	JdbcGroupDao jdbcGroupDao;
 
-	@Sql(statements = "INSERT INTO school.courses(course_name) VALUES ('math');")
 	@Test
 	void whenApplicationIsRunning_thenaddCourseToDBReturnsCorrectCountOfCoursesAddedToDB() {
 		assertEquals(1, jdbcCourseDao.addCourseToDB("TestCourse"));
+	}
+	
+	@Test
+	void whenApplicationIsRunning_thenaddGroupsToDBReturnsCorrectCountOfGroupsAddedToDB() {
+		assertEquals(1, jdbcGroupDao.addGroupToDB("aa-11"));
 	}
 
 }

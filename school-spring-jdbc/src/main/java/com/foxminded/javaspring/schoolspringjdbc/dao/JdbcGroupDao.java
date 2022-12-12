@@ -29,12 +29,6 @@ public class JdbcGroupDao implements GroupDao {
 	public int addGroupToDB(String groupName) {
 		return jdbcTemplate.update("INSERT INTO school.groups(group_name) VALUES(?);", groupName);
 	}
-	
-	@Override
-	public List<Group> selectCurrentGroups(){
-		return jdbcTemplate.query("SELECT group_id, group_name FROM school.groups", 
-				BeanPropertyRowMapper.newInstance(Group.class));
-	}
 
 	@Override
 	public List<Group> selectGroupsByStudentsCount(int studentsCount) {
