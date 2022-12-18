@@ -5,9 +5,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
+import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 
 @Repository
-public class JdbcCourseDao implements CourseDao {
+public class JdbcCourseDao {
 
 	private JdbcTemplate jdbcTemplate;
 	
@@ -18,13 +19,12 @@ public class JdbcCourseDao implements CourseDao {
 	
 	public void addAllCoursesToDB() {
 
-		Controller.courses.forEach(course -> addCourseToDB(course.getCourseName()));
+		Controller.courses.forEach(this::addCourseToDB);
 		System.out.println("Courses added to School database");
 	}
 
-	@Override
-	public int addCourseToDB(String courseName) {
-		return jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES (?);", courseName);
+	public int addCourseToDB(Course course) {
+		return jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES (?);", course.getCourseName());
 	}
 	
 	

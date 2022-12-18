@@ -11,27 +11,25 @@ import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 
 @Repository
-public class JdbcStudentDao implements StudentDao {
+public class JdbcStudentDao {
 
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
-	public JdbcStudentDao (JdbcTemplate jdbcTemplate) {
+	public JdbcStudentDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	public void addStudentsToDB() {
-		Controller.students.forEach(student -> addStudentToDB((student.getFirstName()), (student.getLastName())));
+		Controller.students.forEach(this::addStudentToDB);
 		System.out.println("Students added to School database");
 	}
 
-	@Override
-	public int addStudentToDB(String firstName, String lastName) {
-		return jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES (?, ?);", firstName,
-				lastName);
+	public int addStudentToDB(Student student) {
+		return jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES (?, ?);",
+				student.getFirstName(), student.getLastName());
 	}
 
-	@Override
 	public int deleteStudentFromDB(int studentID) {
 		return jdbcTemplate.update("DELETE FROM school.students WHERE student_id = ?;", studentID);
 	}
@@ -39,25 +37,23 @@ public class JdbcStudentDao implements StudentDao {
 	public void addGroupIDToAllTheirStudentsInDB() {
 		for (Student student : Controller.students) {
 			if (student.getGroupID() != 0) {
-				addGroupIDToStudentInDB(student.getGroupID(), student.getFirstName(), student.getLastName());
+				addGroupIDToStudentInDB(student);
 			}
 		}
 		System.out.println("Students assigned to groups in School database");
 	}
 
-	@Override
-	public int addGroupIDToStudentInDB(int groupID, String studentFirstName, String studentLastName) {
-		return jdbcTemplate.update("UPDATE school.students SET group_id = ? WHERE first_name = ? AND last_name = ?;",
-				groupID, studentFirstName, studentLastName);
+	public int addGroupIDToStudentInDB(Student student) {
+		return jdbcTemplate.update("UPDATE school.students SET group_id = ? WHERE student_id = ?;", student.getGroupID(),
+				student.getStudentID());
 	}
 
-	@Override
 	public List<Student> findStudentsRelatedToCourse(String courseName) {
 		return jdbcTemplate.query(
-				"SELECT school.students.student_id, school.students.first_name, school.students.last_name FROM school.students "
-						+ "INNER JOIN school.students_courses ON school.students.student_id = school.students_courses.student_id "
-						+ "INNER JOIN school.courses ON school.courses.course_id = school.students_courses.course_id "
-						+ "WHERE course_name = ?;",
+				"SELECT s.student_id AS studentID, s.first_name AS firstName, "
+						+ "s.last_name AS lastName FROM school.students s "
+						+ "INNER JOIN school.students_courses sc ON s.student_id = sc.student_id "
+						+ "INNER JOIN school.courses c ON c.course_id = sc.course_id " + "WHERE course_name = ?;",
 				BeanPropertyRowMapper.newInstance(Student.class), courseName);
 	}
 }

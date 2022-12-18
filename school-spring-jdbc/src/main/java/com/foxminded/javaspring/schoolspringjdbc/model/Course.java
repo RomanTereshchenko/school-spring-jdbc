@@ -14,7 +14,6 @@ public class Course {
 	private String courseName;
 	private String courseDescription;
 	public Course(int courseID, String courseName) {
-		super();
 		this.courseID = courseID;
 		this.courseName = courseName;
 	}

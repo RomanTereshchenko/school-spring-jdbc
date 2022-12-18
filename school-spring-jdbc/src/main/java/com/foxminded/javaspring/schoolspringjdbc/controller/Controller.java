@@ -34,8 +34,10 @@ public class Controller {
 	private JdbcStudentsCoursesDao jdbcStudentsCoursesDao;
 	private CourseGenerator courseGenerator;
 	private Scanner scan = new Scanner(System.in);
+	private Util util;
 	private int groupsNumber = 10;
 	private int studentsNumber = 200;
+	private int menuOptionsNumber = 7;
 
 	public static List<Group> groups = new ArrayList<>();
 	public static List<Course> courses = new ArrayList<>();
@@ -44,8 +46,7 @@ public class Controller {
 	@Autowired
 	public Controller(JdbcTablesDao jdbcTablesDao, GroupGenerator groupGenerator, JdbcGroupDao jdbcGroupDao,
 			JdbcCourseDao jdbcCourseDao, StudentGenerator studentGenerator, JdbcStudentDao jdbcStudentDao,
-			JdbcStudentsCoursesDao jdbcStudentsCoursesDao, CourseGenerator courseGenerator) {
-		super();
+			JdbcStudentsCoursesDao jdbcStudentsCoursesDao, CourseGenerator courseGenerator, Util util) {
 		this.jdbcTablesDao = jdbcTablesDao;
 		this.groupGenerator = groupGenerator;
 		this.jdbcGroupDao = jdbcGroupDao;
@@ -54,6 +55,7 @@ public class Controller {
 		this.jdbcStudentDao = jdbcStudentDao;
 		this.jdbcStudentsCoursesDao = jdbcStudentsCoursesDao;
 		this.courseGenerator = courseGenerator;
+		this.util = util;
 	}
 
 	public void startUp() {
@@ -71,12 +73,12 @@ public class Controller {
 	}
 
 	public void menu() {
-		String[] options = { "1 - Find all groups with less or equal students' number",
-				"2 - Find all students related to the course with the given name", "3 - Add a new student",
-				"4 - Delete a student by the STUDENT_ID", "5 - Add a student to the course (from a list)",
-				"6 - Remove the student from one of their courses", "7 - Exit", };
+		String options = "1 - Find all groups with less or equal students' number \n2 - Find all students related to "
+				+ "the course with the given name \n3 - Add a new student \n4 - Delete a student by the STUDENT_ID "
+				+ "\n5 - Add a student to the course (from a list) \n6 - Remove the student from one of their courses "
+				+ "\n7 - Exit";
 		int option = 1;
-		while (option != 7) {
+		while (option != menuOptionsNumber) {
 			printMenu(options);
 			try {
 				option = scan.nextInt();
@@ -103,7 +105,7 @@ public class Controller {
 					exit(0);
 				}
 			} catch (IllegalArgumentException e) {
-				System.out.println("Please, enter an integer value between 1 and " + options.length);
+				System.out.println("Please, enter an integer value between 1 and " + menuOptionsNumber);
 				scan.next();
 			}
 		}
@@ -111,62 +113,60 @@ public class Controller {
 
 	}
 
-	private void printMenu(String[] options) {
-		for (String option : options) {
-			System.out.println(option);
-		}
+	private void printMenu(String options) {
+		System.out.println(options);
 		System.out.println("Choose your option : ");
 	}
 
 	private void removeStudentFromCourse() {
 		System.out.println("Remove the student from one of their courses");
 		System.out.println("Enter the student ID");
-		int studentIdToRemove = scan.nextInt();
-		scan.nextLine();
-		System.out.println("Enter the course ID");
-		int courseIdToRemove = scan.nextInt();
-		scan.nextLine();
+		int studentIdToRemove = util.scanInt();
 		List<StudentCourse> studentCourses = jdbcStudentsCoursesDao.getCoursesOfStudent(studentIdToRemove);
-		List<Integer> studentCoursesIDs = new ArrayList<>();
+		System.out.println("This student is assigned to the following courses:");
 		for (StudentCourse studentCourse : studentCourses) {
-			studentCoursesIDs.add(studentCourse.getCourseId());
+			System.out.println(
+					studentCourse.getCourseId() + " - " + courses.get(studentCourse.getCourseId()).getCourseName());
 		}
-		if (!studentCoursesIDs.contains(courseIdToRemove)) {
+		System.out.println("Enter the course ID, from which to remove this student");
+		int courseIdToRemove = util.scanInt();
+		for (StudentCourse studentCourse : studentCourses) {
+			if (studentCourse.getCourseId() == courseIdToRemove) {
+				jdbcStudentsCoursesDao.deleteStudentFromCourse(studentIdToRemove, courseIdToRemove);
+				System.out.println("Student with ID " + studentIdToRemove + " is removed from the course "
+						+ courseIdToRemove + " in School database");
+				return;
+			}
+		}
 			System.out.println("This course is not assigned to this student. Choose other student and course");
-		} else {
-			jdbcStudentsCoursesDao.deleteStudentFromCourse(studentIdToRemove, courseIdToRemove);
-			System.out.println("Student with ID " + studentIdToRemove + " is removed from the course "
-					+ courseIdToRemove + " in School database");
-		}
 	}
 
 	private void addStudentToCourse() {
 		System.out.println("Add a student to the course (from a list)");
 		System.out.println("Enter the student ID");
-		int studentId = scan.nextInt();
-		scan.nextLine();
+		int studentId = util.scanInt();
+		System.out.println("The available courses are:");
+		for (Course course : courses) {
+			System.out.println(course.getCourseID() + " - " + course.getCourseName());
+		}
 		System.out.println("Enter the course ID");
-		int courseId = scan.nextInt();
-		scan.nextLine();
+		int courseId = util.scanInt();
 		List<StudentCourse> studentCourses = jdbcStudentsCoursesDao.getCoursesOfStudent(studentId);
-		List<Integer> studentCoursesIDs = new ArrayList<>();
 		for (StudentCourse studentCourse : studentCourses) {
-			studentCoursesIDs.add(studentCourse.getCourseId());
+			if (studentCourse.getCourseId() == courseId) {
+				System.out.println("This student is already assigned to this course. Choose other student and course.");
+				return;
+			}
 		}
-		if (studentCoursesIDs.contains(courseId)) {
-			System.out.println("This student is already assigned to this course. Choose other student and course.");
-		} else {
-			jdbcStudentsCoursesDao.addStudentCourseAssignmentInDB(studentId, courseId);
-			System.out.println("Course with ID " + courseId + " is assigned to student with ID " + studentId
-					+ " in School database");
-		}
+		jdbcStudentsCoursesDao.addStudentCourseAssignmentInDB(new StudentCourse(studentId, courseId));
+		System.out.println(
+				"Course with ID " + courseId + " is assigned to student with ID " + studentId + " in School database");
 	}
 
 	private void deleteStudent() {
 		System.out.println("Delete a student by the STUDENT_ID");
 		System.out.println("Enter the student ID");
-		int studentIdToDelete = scan.nextInt();
-		scan.nextLine();
+		int studentIdToDelete = util.scanInt();
 		jdbcStudentDao.deleteStudentFromDB(studentIdToDelete);
 		System.out.println("Student with ID " + studentIdToDelete + " is deleted from School database");
 		System.out.println();
@@ -179,15 +179,17 @@ public class Controller {
 		String firstName = scan.nextLine();
 		System.out.println("Enter the student last name");
 		String lastName = scan.nextLine();
-		jdbcStudentDao.addStudentToDB(firstName, lastName);
+		jdbcStudentDao.addStudentToDB(new Student(firstName, lastName));
 		System.out.println("New student " + firstName + " " + lastName + " is added to School database");
 		System.out.println();
 	}
 
 	private void findStudentsRelatedToCourse() {
 		System.out.println("Find all students related to the course with the given name");
-		System.out.println(
-				"Enter a course name (Mathematics, Science, Health, Handwriting, Art, Music, Leadership, Speech, English, Algebra)");
+		System.out.println("Enter a course name from the list: ");
+		for (Course course : courses) {
+			System.out.println(course.getCourseName());
+		}
 		scan.nextLine();
 		String courseName = scan.nextLine();
 		List<Student> studentsOfCourse = jdbcStudentDao.findStudentsRelatedToCourse(courseName);
@@ -199,9 +201,11 @@ public class Controller {
 
 	private void findGroupsByStudentsCount() {
 		System.out.println("Find all groups with less or equal students� number: \n Enter a number between 10 and 30");
-		int lessOrEqualNum = scan.nextInt();
-		scan.nextLine();
-		System.out.println(jdbcGroupDao.selectGroupsByStudentsCount(lessOrEqualNum));
+		int lessOrEqualNum = util.scanInt();
+		List<Group> selectedGroups = jdbcGroupDao.selectGroupsByStudentsCount(lessOrEqualNum);
+		for (Group group : selectedGroups) {
+			System.out.println(group.getGroupName());
+		}
 		System.out.println();
 	}
 

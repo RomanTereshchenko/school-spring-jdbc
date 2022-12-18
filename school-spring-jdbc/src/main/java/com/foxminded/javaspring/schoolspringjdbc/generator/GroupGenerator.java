@@ -28,9 +28,19 @@ public class GroupGenerator {
 	}
 
 	private String generateGroupName() {
-		return (new StringBuilder().append(((char) (random.nextInt(26) + 'a')))
-				.append(((char) (random.nextInt(26) + 'a'))) + ("-" + random.nextInt(10) + random.nextInt(10)))
+		return (new StringBuilder().append(generateRandomChar())
+				.append(generateRandomChar()) + "-" + generateRandomInt() + generateRandomInt())
 				.toString();
 	}
+
+	private int generateRandomInt() {
+		return random.nextInt(10);
+	}
+
+	private char generateRandomChar() {
+		return (char) (random.nextInt(26) + 'a');
+	}
+	
+	
 
 }

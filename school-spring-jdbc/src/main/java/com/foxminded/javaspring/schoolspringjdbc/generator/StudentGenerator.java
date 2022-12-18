@@ -27,12 +27,18 @@ public class StudentGenerator {
 
 	public List<Student> generateNStudents(int countToGenerate) {
 		List<Student> studentsLocal = new ArrayList<>();
-		IntStream.rangeClosed(1, countToGenerate)
-				.forEach(studentID -> studentsLocal
-						.add(new Student(studentID, studentFirstNames.get(random.nextInt(studentFirstNames.size())),
-								studentLastNames.get(random.nextInt(studentLastNames.size())))));
+		IntStream.rangeClosed(1, countToGenerate).forEach(
+				studentID -> studentsLocal.add(new Student(studentID, getRandomFirstName(), getRandomLastName())));
 		System.out.println("Students generated");
 		return studentsLocal;
+	}
+
+	private String getRandomFirstName() {
+		return studentFirstNames.get(random.nextInt(studentFirstNames.size()));
+	}
+
+	private String getRandomLastName() {
+		return studentLastNames.get(random.nextInt(studentLastNames.size()));
 	}
 
 	public void assignAllGroupsToAllItsStudents() {

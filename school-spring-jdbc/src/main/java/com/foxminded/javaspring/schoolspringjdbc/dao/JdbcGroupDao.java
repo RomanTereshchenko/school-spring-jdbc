@@ -11,7 +11,7 @@ import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 
 @Repository
-public class JdbcGroupDao implements GroupDao {
+public class JdbcGroupDao {
 
 	private JdbcTemplate jdbcTemplate;
 	
@@ -21,20 +21,18 @@ public class JdbcGroupDao implements GroupDao {
 	}
 
 	public void addAllGroupsToDB() {
-		Controller.groups.forEach(group -> addGroupToDB(group.getGroupName()));
+		Controller.groups.forEach(this::addGroupToDB);
 		System.out.println("Groups added to School database");
 	}
 
-	@Override
-	public int addGroupToDB(String groupName) {
-		return jdbcTemplate.update("INSERT INTO school.groups(group_name) VALUES(?);", groupName);
+	public int addGroupToDB(Group group) {
+		return jdbcTemplate.update("INSERT INTO school.groups(group_name) VALUES(?);", group.getGroupName());
 	}
 
-	@Override
 	public List<Group> selectGroupsByStudentsCount(int studentsCount) {
-		return jdbcTemplate.query("SELECT school.groups.group_id, school.groups.group_name FROM "
-				+ "(school.groups inner join school.students ON school.groups.group_id = school.students.group_id) "
-				+ "GROUP BY school.groups.group_id HAVING COUNT (school.groups.group_id) <= ?", 
+		return jdbcTemplate.query("SELECT g.group_id AS groupID, g.group_name AS groupName FROM "
+				+ "school.groups g INNER JOIN school.students s ON g.group_id = s.group_id "
+				+ "GROUP BY g.group_id HAVING COUNT (g.group_id) <= ?", 
 				BeanPropertyRowMapper.newInstance(Group.class), studentsCount);
 	}
 

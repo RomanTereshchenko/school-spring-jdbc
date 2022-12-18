@@ -12,7 +12,7 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
 
 @Repository
-public class JdbcStudentsCoursesDao implements StudentsCoursesDao {
+public class JdbcStudentsCoursesDao {
 
 	private JdbcTemplate jdbcTemplate;
 	
@@ -30,23 +30,20 @@ public class JdbcStudentsCoursesDao implements StudentsCoursesDao {
 	void addOneStudentCoursesAssignmentsToDB(int studentID) {
 		List<Course> coursesOfStudent = Controller.students.get(studentID - 1).getCourses();
 		for (Course course : coursesOfStudent) {
-			addStudentCourseAssignmentInDB(studentID, course.getCourseID());
+			addStudentCourseAssignmentInDB(new StudentCourse (studentID, course.getCourseID()));
 		}
 	}
 
-	@Override
-	public int addStudentCourseAssignmentInDB(int studentID, int courseID) {
+	public int addStudentCourseAssignmentInDB(StudentCourse studentCourse) {
 		return jdbcTemplate.update("INSERT INTO school.students_courses (student_id, course_id) VALUES (?, ?);",
-				studentID, courseID);
+				studentCourse.getStudentId(), studentCourse.getCourseId());
 	}
 
-	@Override
 	public List<StudentCourse> getCoursesOfStudent(int studentID) {
 		return jdbcTemplate.query("SELECT * FROM school.students_courses WHERE student_id = ?;",
 				BeanPropertyRowMapper.newInstance(StudentCourse.class), studentID);
 	}
 
-	@Override
 	public int deleteStudentFromCourse(int studentID, int courseID) {
 		return jdbcTemplate.update("DELETE FROM school.students_courses WHERE student_id = ? AND course_id = ?;",
 				studentID, courseID);

@@ -18,8 +18,8 @@ public class CourseGenerator {
 
 		List<Course> coursesLocal = new ArrayList<>();
 
-		for (int i = 0; i < courseNames.size(); i++) {
-			coursesLocal.add(new Course((i + 1), courseNames.get(i)));
+		for (int i = 1; i < courseNames.size(); i++) {
+			coursesLocal.add(new Course((i), courseNames.get(i-1)));
 		}
 		
 		System.out.println("Courses generated");

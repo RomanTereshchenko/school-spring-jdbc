@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 
 @Component
-@ConditionalOnProperty(prefix = "conditional", name = "property")
+@ConditionalOnProperty(prefix = "application", name = "env", havingValue = "prod")
 public class ApplicationStartupRunner implements CommandLineRunner {
 	
 	private Controller controller;
