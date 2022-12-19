@@ -43,7 +43,7 @@ class JdbcCourseDaoTest {
 	}
 
 	@Test
-	void addCourseToDB_AddsCourseToDB() {
+	void testAddCourseToDB() {
 		jdbcCourseDao.addCourseToDB(new Course(1, "TestCourse"));
 		Course course = jdbcTemplate.queryForObject("SELECT * FROM school.courses c WHERE c.course_name = ?",
 				BeanPropertyRowMapper.newInstance(Course.class), "TestCourse");

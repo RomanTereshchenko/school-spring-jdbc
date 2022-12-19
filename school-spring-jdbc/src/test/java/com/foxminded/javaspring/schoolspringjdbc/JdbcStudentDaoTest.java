@@ -3,9 +3,7 @@ package com.foxminded.javaspring.schoolspringjdbc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +47,7 @@ class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void addStudentToDB_AddsStudentToDB() {
+	void testAddStudentToDB() {
 		jdbcStudentDao.addStudentToDB(new Student("TestFName", "TestLName"));
 		Student student = jdbcTemplate.queryForObject(
 				"SELECT * FROM school.students WHERE first_name = ? AND " + "last_name = ?;",
@@ -60,7 +58,7 @@ class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void deleteStudentFromDB_DeletsStudentFromDB() {
+	void testDeleteStudentFromDB() {
 		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('DelStudentFName', "
 				+ "'DelStudentLName');");
 		Student student = jdbcTemplate.queryForObject("SELECT * from school.students WHERE "
@@ -78,38 +76,26 @@ class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void addGroupIDToStudentInDB_AddsGroupIDToStudent() {
+	void testAddGroupIDToStudentInDB() {
 		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestStudentFName', "
 				+ "'TestStudentLName');");
 		jdbcTemplate.update("INSERT INTO school.groups(group_name) VALUES('tt-11');");
 		jdbcStudentDao.addGroupIDToStudentInDB(new Student (1, 1));
-		Student student = jdbcTemplate.queryForObject("Select * from school.students WHERE "
-				+ "first_name = 'TestStudentFName' AND " + "last_name = 'TestStudentLName'",
-				BeanPropertyRowMapper.newInstance(Student.class));
-		assertEquals(0, student.getGroupID());
+		int groupID = jdbcTemplate.queryForObject("SELECT group_id AS groupID from school.students WHERE "
+				+ "first_name = 'TestStudentFName' AND " + "last_name = 'TestStudentLName'", Integer.class);
+		assertEquals(1, groupID);
 	}
 
 	@Test
 	void findStudentsRelatedToCourse_ReturnsCorrectListOfStudentsAssignedToSelectedCourse() {
-		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestStudentFName1', "
-				+ "'TestStudentLName1');");
-		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestStudentFName2', "
-				+ "'TestStudentLName2');");
+		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestStudentFName', "
+				+ "'TestStudentLName');");
 		jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES ('TestCourse');");
 		jdbcTemplate.update("INSERT INTO school.students_courses (student_id, course_id) VALUES (1, 1);");
-		jdbcTemplate.update("INSERT INTO school.students_courses (student_id, course_id) VALUES (2, 1);");
 		List<Student> studentsRelatedToCourse = jdbcStudentDao.findStudentsRelatedToCourse("TestCourse");
-		assertNotNull(studentsRelatedToCourse);
-		List<String> firstNames = new ArrayList<>();
-		List<String> lastNames = new ArrayList<>();
-		for (Student student : studentsRelatedToCourse) {
-			firstNames.add(student.getFirstName());
-			lastNames.add(student.getLastName());
-		}
-		assertTrue(firstNames.contains("TestStudentFName1"));
-		assertTrue(firstNames.contains("TestStudentFName2"));
-		assertTrue(lastNames.contains("TestStudentLName1"));
-		assertTrue(lastNames.contains("TestStudentLName2"));
+		assertEquals(1, studentsRelatedToCourse.size());
+		assertEquals("TestStudentFName", studentsRelatedToCourse.get(0).getFirstName());
+		assertEquals("TestStudentLName", studentsRelatedToCourse.get(0).getLastName());
 	}
 
 }

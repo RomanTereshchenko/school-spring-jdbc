@@ -47,7 +47,7 @@ class JdbcStudentsCoursesDaoTest {
 	}
 
 	@Test
-	void addStudentCourseAssignmentInDB_AddsStudentCourseAssignment() {
+	void testAddStudentCourseAssignmentInDB() {
 		jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES ('TestCourse');");
 		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestFName', 'TestLName');");
 		jdbcStudentsCoursesDao.addStudentCourseAssignmentInDB(new StudentCourse(1, 1));
@@ -62,18 +62,16 @@ class JdbcStudentsCoursesDaoTest {
 	@Test
 	void getCoursesOfStudent_ReturnsListOfStudentCourses() {
 		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestFName', 'TestLName');");
-		jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES ('TestCourse1');");
-		jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES ('TestCourse2');");
+		jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES ('TestCourse');");
 		jdbcTemplate.update("INSERT INTO school.students_courses (student_id, course_id) VALUES (1, 1);");
-		jdbcTemplate.update("INSERT INTO school.students_courses (student_id, course_id) VALUES (1, 2);");
 		List<StudentCourse> coursesOfStudent = jdbcStudentsCoursesDao.getCoursesOfStudent(1);
 		assertNotNull(coursesOfStudent);
+		assertEquals(1, coursesOfStudent.get(0).getStudentId());
 		assertEquals(1, coursesOfStudent.get(0).getCourseId());
-		assertEquals(2, coursesOfStudent.get(1).getCourseId());
 	}
 
 	@Test
-	void deleteStudentFromCourse_deletesStudentCourseAssignmentFromDB() {
+	void testDeleteStudentFromCourse() {
 		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestFName', 'TestLName');");
 		jdbcTemplate.update("INSERT INTO school.courses(course_name) VALUES ('TestCourse1');");
 		jdbcTemplate.update("INSERT INTO school.students_courses (student_id, course_id) VALUES (1, 1);");

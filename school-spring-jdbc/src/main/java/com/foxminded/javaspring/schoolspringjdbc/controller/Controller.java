@@ -34,7 +34,7 @@ public class Controller {
 	private JdbcStudentsCoursesDao jdbcStudentsCoursesDao;
 	private CourseGenerator courseGenerator;
 	private Scanner scan = new Scanner(System.in);
-	private Util util;
+	private ScannerUtil util;
 	private int groupsNumber = 10;
 	private int studentsNumber = 200;
 	private int menuOptionsNumber = 7;
@@ -46,7 +46,7 @@ public class Controller {
 	@Autowired
 	public Controller(JdbcTablesDao jdbcTablesDao, GroupGenerator groupGenerator, JdbcGroupDao jdbcGroupDao,
 			JdbcCourseDao jdbcCourseDao, StudentGenerator studentGenerator, JdbcStudentDao jdbcStudentDao,
-			JdbcStudentsCoursesDao jdbcStudentsCoursesDao, CourseGenerator courseGenerator, Util util) {
+			JdbcStudentsCoursesDao jdbcStudentsCoursesDao, CourseGenerator courseGenerator, ScannerUtil util) {
 		this.jdbcTablesDao = jdbcTablesDao;
 		this.groupGenerator = groupGenerator;
 		this.jdbcGroupDao = jdbcGroupDao;

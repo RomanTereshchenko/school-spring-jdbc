@@ -15,7 +15,7 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 
 @SpringBootTest
 class JdbcGroupDaoTest {
-	
+
 	private JdbcGroupDao jdbcGroupDao;
 	private JdbcTemplate jdbcTemplate;
 
@@ -24,7 +24,7 @@ class JdbcGroupDaoTest {
 		this.jdbcGroupDao = jdbcGroupDao;
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
+
 	@BeforeEach
 	void truncateTables() {
 		jdbcTemplate.execute("TRUNCATE TABLE school.groups CASCADE;");
@@ -41,8 +41,9 @@ class JdbcGroupDaoTest {
 				"ALTER TABLE school.students ALTER COLUMN student_id SET DEFAULT nextval('school.students_student_id_seq');");
 		jdbcTemplate.execute("TRUNCATE TABLE school.students_courses CASCADE;");
 	}
-	
-	void addGroupsToDB_AddsGroupToDB() {
+
+	@Test
+	void testAddGroupToDB() {
 		jdbcGroupDao.addGroupToDB(new Group(1, "tt-00"));
 		Group group = jdbcTemplate.queryForObject("SELECT * FROM school.groups WHERE course_name = ?",
 				BeanPropertyRowMapper.newInstance(Group.class), "tt-00");
@@ -53,10 +54,10 @@ class JdbcGroupDaoTest {
 	@Test
 	void selectGroupsByStudentsCount_ReturnsGropWithSelectedStudentCount() {
 		jdbcGroupDao.addGroupToDB(new Group(1, "tt-00"));
-		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestFName1', 'TestLName1');");
-		jdbcTemplate.update("INSERT INTO school.students (first_name, last_name) VALUES ('TestFName2', 'TestLName2');");
-		jdbcTemplate.update("UPDATE school.students SET group_id = 1 WHERE first_name = 'TestFName1' AND last_name = 'TestLName1';");
-		jdbcTemplate.update("UPDATE school.students SET group_id = 1 WHERE first_name = 'TestFName2' AND last_name = 'TestLName2';");
+		jdbcTemplate.update(
+				"INSERT INTO school.students (group_id, first_name, last_name) VALUES (1, 'TestFName1', 'TestLName1');");
+		jdbcTemplate.update(
+				"INSERT INTO school.students (group_id, first_name, last_name) VALUES (1, 'TestFName2', 'TestLName2');");
 		assertEquals("tt-00", jdbcGroupDao.selectGroupsByStudentsCount(2).get(0).getGroupName());
 	}
 
