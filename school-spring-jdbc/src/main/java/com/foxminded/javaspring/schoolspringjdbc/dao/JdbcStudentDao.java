@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
+import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
 @Repository
 public class JdbcStudentDao {
@@ -21,7 +21,7 @@ public class JdbcStudentDao {
 	}
 
 	public void addStudentsToDB() {
-		Controller.students.forEach(this::addStudentToDB);
+		DBGeneratorService.students.forEach(this::addStudentToDB);
 		System.out.println("Students added to School database");
 	}
 
@@ -35,7 +35,7 @@ public class JdbcStudentDao {
 	}
 
 	public void addGroupIDToAllTheirStudentsInDB() {
-		for (Student student : Controller.students) {
+		for (Student student : DBGeneratorService.students) {
 			if (student.getGroupID() != 0) {
 				addGroupIDToStudentInDB(student);
 			}

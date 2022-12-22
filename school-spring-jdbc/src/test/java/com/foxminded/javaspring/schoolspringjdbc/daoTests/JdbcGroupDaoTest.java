@@ -1,4 +1,4 @@
-package com.foxminded.javaspring.schoolspringjdbc;
+package com.foxminded.javaspring.schoolspringjdbc.daoTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -45,7 +45,8 @@ class JdbcGroupDaoTest {
 	@Test
 	void testAddGroupToDB() {
 		jdbcGroupDao.addGroupToDB(new Group(1, "tt-00"));
-		Group group = jdbcTemplate.queryForObject("SELECT * FROM school.groups WHERE course_name = ?",
+		Group group = jdbcTemplate.queryForObject(
+				"SELECT g.group_id AS groupID, g.group_name as groupName FROM school.groups g WHERE group_name = ?",
 				BeanPropertyRowMapper.newInstance(Group.class), "tt-00");
 		assertNotNull(group);
 		assertEquals("tt-00", group.getGroupName());

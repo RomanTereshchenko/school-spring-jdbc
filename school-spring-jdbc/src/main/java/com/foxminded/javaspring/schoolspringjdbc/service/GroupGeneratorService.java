@@ -1,4 +1,4 @@
-package com.foxminded.javaspring.schoolspringjdbc.generator;
+package com.foxminded.javaspring.schoolspringjdbc.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 
 @Service
-public class GroupGenerator {
+public class GroupGeneratorService {
 
 	private Random random = new Random();
 	
@@ -40,7 +40,5 @@ public class GroupGenerator {
 	private char generateRandomChar() {
 		return (char) (random.nextInt(26) + 'a');
 	}
-	
-	
 
 }
