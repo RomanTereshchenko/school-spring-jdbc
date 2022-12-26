@@ -6,31 +6,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 import com.foxminded.javaspring.schoolspringjdbc.service.GroupService;
+import com.foxminded.javaspring.schoolspringjdbc.utils.ScannerUtil;
 
-@ActiveProfiles("test")
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class GroupServiceTest {
 
-	@Autowired
-	private GroupService groupService;
-	@Autowired
+	@Mock
+	private ScannerUtil scannerUtil;
+	
+	@Mock
 	private JdbcGroupDao jdbcGroupDao;
 
+	@InjectMocks
+	private GroupService groupService;
+
 	@Test
-	void whenStudentCountIsProvided_thenRetrievedGroupNameIsCorrect() {
-		List<Group> selectedGroups = new ArrayList<>();
-		selectedGroups.add(new Group(1, "tt-11"));
-		Mockito.when(((OngoingStubbing<List<Group>>) jdbcGroupDao.selectGroupsByStudentsCount(20))
-				.thenReturn(selectedGroups));
+	void testFindGroupsByStudentsCount() {
+		List<Group> selectedGroupsStub = new ArrayList<>();
+		selectedGroupsStub.add(new Group(1, "tt-11"));
+		Mockito.when(scannerUtil.scanInt()).thenReturn(20);
+		Mockito.when(jdbcGroupDao.selectGroupsByStudentsCount(20)).thenReturn(selectedGroupsStub);
 		assertEquals("tt-11", groupService.findGroupsByStudentsCount().get(0).getGroupName());
 	}
 

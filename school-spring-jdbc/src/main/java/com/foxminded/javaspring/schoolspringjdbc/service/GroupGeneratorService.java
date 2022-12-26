@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
@@ -11,8 +12,13 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 @Service
 public class GroupGeneratorService {
 
-	private Random random = new Random();
+	private Random random;
 	
+	@Autowired
+	public GroupGeneratorService(Random random) {
+		this.random = random;
+	}
+
 	public List<Group> generateNGroups(int countToGenerate) {
 
 		List<Group> groupsLocal = new ArrayList<>();

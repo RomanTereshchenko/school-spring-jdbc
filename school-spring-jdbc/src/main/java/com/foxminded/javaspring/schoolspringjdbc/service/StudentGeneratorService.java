@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
@@ -15,7 +16,7 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 @Service
 public class StudentGeneratorService {
 
-	private Random random = new Random();
+	private Random random;
 	private int nextUnassignedStudentID = 0;
 	private List<String> studentFirstNames = Arrays.asList("Lexi", "Elouise", "Wilbur", "Glenda", "Judah", "Salahuddin",
 			"Juliet", "Tanner", "Luella", "Enid", "Hadiya", "Rares", "Bryan", "Patsy", "Eshan", "Lester", "Bentley",
@@ -23,6 +24,11 @@ public class StudentGeneratorService {
 	private List<String> studentLastNames = Arrays.asList("Ferry", "Buck", "Moody", "Craft", "Ridley", "Aguilar",
 			"Garrett", "Peralta", "Mcknight", "O'Quinn", "Simons", "Kelley", "Trejo", "Dougherty", "Palacios", "Murphy",
 			"Gordon", "Mcgee", "Strong", "Philip");
+
+	@Autowired
+	public StudentGeneratorService(Random random) {
+		this.random = random;
+	}
 
 	public List<Student> generateNStudents(int countToGenerate) {
 		List<Student> studentsLocal = new ArrayList<>();

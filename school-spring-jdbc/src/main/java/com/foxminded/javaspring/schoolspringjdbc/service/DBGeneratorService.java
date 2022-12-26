@@ -31,7 +31,7 @@ public class DBGeneratorService {
 	private JdbcStudentDao jdbcStudentDao;
 	private JdbcStudentsCoursesDao jdbcStudentsCoursesDao;
 	private CourseGeneratorService courseGeneratorService;
-	private Scanner scan = new Scanner(System.in);
+	private Scanner scan;
 	private int groupsNumber = 10;
 	private int studentsNumber = 200;
 	private int menuOptionsNumber = 7;
@@ -48,7 +48,7 @@ public class DBGeneratorService {
 			JdbcGroupDao jdbcGroupDao, JdbcCourseDao jdbcCourseDao, StudentGeneratorService studentGeneratorService,
 			JdbcStudentDao jdbcStudentDao, JdbcStudentsCoursesDao jdbcStudentsCoursesDao,
 			CourseGeneratorService courseGeneratorService, GroupService groupService, StudentService studentService,
-			StudentCourseService studentCourseService) {
+			StudentCourseService studentCourseService, Scanner scan) {
 		this.jdbcTablesDao = jdbcTablesDao;
 		this.groupGeneratorService = groupGeneratorService;
 		this.jdbcGroupDao = jdbcGroupDao;
@@ -60,6 +60,7 @@ public class DBGeneratorService {
 		this.groupService = groupService;
 		this.studentService = studentService;
 		this.studentCourseService = studentCourseService;
+		this.scan = scan;
 	}
 
 	

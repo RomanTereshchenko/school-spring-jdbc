@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
+import com.foxminded.javaspring.schoolspringjdbc.utils.ScannerUtil;
 
 @Service
 public class GroupService {
@@ -15,8 +16,8 @@ public class GroupService {
 	private JdbcGroupDao jdbcGroupDao;
 
 	@Autowired
-	public GroupService(ScannerUtil util, JdbcGroupDao jdbcGroupDao) {
-		this.scannerUtil = util;
+	public GroupService(ScannerUtil scannerUtil, JdbcGroupDao jdbcGroupDao) {
+		this.scannerUtil = scannerUtil;
 		this.jdbcGroupDao = jdbcGroupDao;
 	}
 
