@@ -1,6 +1,6 @@
 package com.foxminded.javaspring.schoolspringjdbc.serviceTests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ class GroupServiceTest {
 
 	@Mock
 	private ScannerUtil scannerUtil;
-	
+
 	@Mock
 	private JdbcGroupDao jdbcGroupDao;
 
@@ -31,11 +31,13 @@ class GroupServiceTest {
 
 	@Test
 	void testFindGroupsByStudentsCount() {
-		List<Group> selectedGroupsStub = new ArrayList<>();
-		selectedGroupsStub.add(new Group(1, "tt-11"));
+		List<Group> selectedGroups = new ArrayList<>();
+		selectedGroups.add(new Group(1, "tt-11"));
+		Mockito.when(jdbcGroupDao.selectGroupsByStudentsCount(anyInt())).thenReturn(selectedGroups);
 		Mockito.when(scannerUtil.scanInt()).thenReturn(20);
-		Mockito.when(jdbcGroupDao.selectGroupsByStudentsCount(20)).thenReturn(selectedGroupsStub);
-		assertEquals("tt-11", groupService.findGroupsByStudentsCount().get(0).getGroupName());
+		groupService.findGroupsByStudentsCount();
+		Mockito.verify(jdbcGroupDao).selectGroupsByStudentsCount(20);
+		Mockito.verify(scannerUtil).scanInt();
 	}
 
 }

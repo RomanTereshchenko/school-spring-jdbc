@@ -1,8 +1,6 @@
 package com.foxminded.javaspring.schoolspringjdbc.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,7 @@ public class StudentCourseService {
 		this.scannerUtil = scannerUtil;
 	}
 
-	public Map<Integer, Integer> addStudentToCourse() {
+	public void addStudentToCourse() {
 		System.out.println("Add a student to the course (from a list)");
 		System.out.println("Enter the student ID");
 		int studentId = scannerUtil.scanInt();
@@ -34,22 +32,20 @@ public class StudentCourseService {
 		}
 		System.out.println("Enter the course ID");
 		int courseId = scannerUtil.scanInt();
-		Map<Integer, Integer> parameterstoAddMap = new HashMap<>();
-		parameterstoAddMap.put(studentId, courseId);
 		List<StudentCourse> studentCourses = jdbcStudentsCoursesDao.getCoursesOfStudent(studentId);
 		for (StudentCourse studentCourse : studentCourses) {
 			if (studentCourse.getCourseId() == courseId) {
 				System.out.println("This student is already assigned to this course. Choose other student and course.");
-				return parameterstoAddMap;
+				return;
 			}
 		}
 		jdbcStudentsCoursesDao.addStudentCourseAssignmentInDB(new StudentCourse(studentId, courseId));
 		System.out.println(
 				"Course with ID " + courseId + " is assigned to student with ID " + studentId + " in School database");
-		return parameterstoAddMap;
+		return;
 	}
 
-	public Map<Integer, Integer> removeStudentFromCourse() {
+	public void removeStudentFromCourse() {
 		System.out.println("Remove the student from one of their courses");
 		System.out.println("Enter the student ID");
 		int studentIdToRemove = scannerUtil.scanInt();
@@ -61,18 +57,16 @@ public class StudentCourseService {
 		}
 		System.out.println("Enter the course ID, from which to remove this student");
 		int courseIdToRemove = scannerUtil.scanInt();
-		Map<Integer, Integer> parametersToRemoveMap = new HashMap<>();
-		parametersToRemoveMap.put(studentIdToRemove, courseIdToRemove);
 		for (StudentCourse studentCourse : studentCourses) {
 			if (studentCourse.getCourseId() == courseIdToRemove) {
 				jdbcStudentsCoursesDao.deleteStudentFromCourse(studentIdToRemove, courseIdToRemove);
 				System.out.println("Student with ID " + studentIdToRemove + " is removed from the course "
 						+ courseIdToRemove + " in School database");
-				return parametersToRemoveMap;
+				return;
 			}
 		}
 		System.out.println("This course is not assigned to this student. Choose other student and course");
-		return parametersToRemoveMap;
+		return;
 	}
 
 }

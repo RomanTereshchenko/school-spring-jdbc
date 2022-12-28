@@ -1,7 +1,9 @@
 package com.foxminded.javaspring.schoolspringjdbc.serviceTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,26 +34,28 @@ class StudentServiceTest {
 
 	@Test
 	void testFindStudentsRelatedToCourse() {
-		List<Student> studentsOfCourseStub = new ArrayList<>();
-		studentsOfCourseStub.add(new Student("TestFirstName", "TestLastName"));
-		Mockito.when(scannerUtil.scanString()).thenReturn("Mathematics");
-		Mockito.when(jdbcStudentDao.findStudentsRelatedToCourse("Mathematics")).thenReturn(studentsOfCourseStub);
-		assertEquals("TestFirstName", studentService.findStudentsRelatedToCourse().get(0).getFirstName());
-		assertEquals("TestLastName", studentService.findStudentsRelatedToCourse().get(0).getLastName());
+		List<Student> studentsOfCourse = new ArrayList<>();
+		studentsOfCourse.add(new Student("TestFirstName", "TestLastName"));
+		Mockito.when(scannerUtil.scanString()).thenReturn("TestCourse");
+		Mockito.when(jdbcStudentDao.findStudentsRelatedToCourse("TestCourse")).thenReturn(studentsOfCourse);
+		List<Student> result = studentService.findStudentsRelatedToCourse();
+		assertEquals("TestFirstName", result.get(0).getFirstName());
+		assertEquals("TestLastName", result.get(0).getLastName());
 	}
 
 	@Test
 	void testAddNewStudent() {
 		Mockito.when(scannerUtil.scanString()).thenReturn("TestName");
-		Mockito.when(jdbcStudentDao.addStudentToDB(new Student("TestName", "TestName"))).thenReturn(1);
-		assertTrue(studentService.addNewStudent().containsKey("TestName"));
-		assertEquals("TestName", (studentService.addNewStudent().get("TestName")));
+		Mockito.when(jdbcStudentDao.addStudentToDB(any(Student.class))).thenReturn(1);
+		studentService.addNewStudent();
+		verify(jdbcStudentDao).addStudentToDB(any(Student.class));
 	}
 
 	@Test
 	void testDeleteStudent() {
 		Mockito.when(scannerUtil.scanInt()).thenReturn(1);
 		Mockito.when(jdbcStudentDao.deleteStudentFromDB(1)).thenReturn(1);
-		assertEquals(1, studentService.deleteStudent());
+		studentService.deleteStudent();
+		verify(jdbcStudentDao).deleteStudentFromDB(anyInt());
 	}
 }

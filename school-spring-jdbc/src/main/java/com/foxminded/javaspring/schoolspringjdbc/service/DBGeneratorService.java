@@ -4,7 +4,6 @@ import static java.lang.System.exit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcTablesDao;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
+import com.foxminded.javaspring.schoolspringjdbc.utils.ScannerUtil;
 
 
 
@@ -31,7 +31,7 @@ public class DBGeneratorService {
 	private JdbcStudentDao jdbcStudentDao;
 	private JdbcStudentsCoursesDao jdbcStudentsCoursesDao;
 	private CourseGeneratorService courseGeneratorService;
-	private Scanner scan;
+	private ScannerUtil scannerUtil;
 	private int groupsNumber = 10;
 	private int studentsNumber = 200;
 	private int menuOptionsNumber = 7;
@@ -48,7 +48,7 @@ public class DBGeneratorService {
 			JdbcGroupDao jdbcGroupDao, JdbcCourseDao jdbcCourseDao, StudentGeneratorService studentGeneratorService,
 			JdbcStudentDao jdbcStudentDao, JdbcStudentsCoursesDao jdbcStudentsCoursesDao,
 			CourseGeneratorService courseGeneratorService, GroupService groupService, StudentService studentService,
-			StudentCourseService studentCourseService, Scanner scan) {
+			StudentCourseService studentCourseService, ScannerUtil scannerUtil) {
 		this.jdbcTablesDao = jdbcTablesDao;
 		this.groupGeneratorService = groupGeneratorService;
 		this.jdbcGroupDao = jdbcGroupDao;
@@ -60,7 +60,7 @@ public class DBGeneratorService {
 		this.groupService = groupService;
 		this.studentService = studentService;
 		this.studentCourseService = studentCourseService;
-		this.scan = scan;
+		this.scannerUtil = scannerUtil;
 	}
 
 	
@@ -88,7 +88,7 @@ public class DBGeneratorService {
 		while (option != menuOptionsNumber) {
 			printMenu(options);
 			try {
-				option = scan.nextInt();
+				option = scannerUtil.scanInt();
 				switch (option) {
 				case 1:
 					groupService.findGroupsByStudentsCount();
@@ -113,10 +113,10 @@ public class DBGeneratorService {
 				}
 			} catch (IllegalArgumentException e) {
 				System.out.println("Please, enter an integer value between 1 and " + menuOptionsNumber);
-				scan.next();
+				scannerUtil.scanInt();
 			}
 		}
-		scan.close();
+		scannerUtil.closeScan();;
 	}
 
 	private void printMenu(String options) {

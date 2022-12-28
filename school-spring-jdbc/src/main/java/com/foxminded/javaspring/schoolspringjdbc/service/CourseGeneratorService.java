@@ -11,7 +11,7 @@ import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 @Service
 public class CourseGeneratorService {
 	
-	private final List<String> courseNames = Arrays.asList("Mathematics", "Science", "Health", "Handwriting", "Art",
+	public final List<String> courseNames = Arrays.asList("Mathematics", "Science", "Health", "Handwriting", "Art",
 	"Music", "Leadership", "Speech", "English", "Algebra");
 
 	public List<Course> generateCourses() {
