@@ -7,9 +7,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
+import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
 @Repository
 public class JdbcStudentsCoursesDao {
@@ -22,13 +22,13 @@ public class JdbcStudentsCoursesDao {
 	}
 
 	public void addStudentsCoursesAssignmentsToDB() {
-		Controller.students.forEach(student -> addOneStudentCoursesAssignmentsToDB(student.getStudentID()));
+		DBGeneratorService.students.forEach(student -> addOneStudentCoursesAssignmentsToDB(student.getStudentID()));
 
 		System.out.println("Students' assignments to courses added to School database");
 	}
 
 	void addOneStudentCoursesAssignmentsToDB(int studentID) {
-		List<Course> coursesOfStudent = Controller.students.get(studentID - 1).getCourses();
+		List<Course> coursesOfStudent = DBGeneratorService.students.get(studentID - 1).getCourses();
 		for (Course course : coursesOfStudent) {
 			addStudentCourseAssignmentInDB(new StudentCourse (studentID, course.getCourseID()));
 		}

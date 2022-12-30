@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
+import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
 @Repository
 public class JdbcGroupDao {
@@ -21,7 +21,7 @@ public class JdbcGroupDao {
 	}
 
 	public void addAllGroupsToDB() {
-		Controller.groups.forEach(this::addGroupToDB);
+		DBGeneratorService.groups.forEach(this::addGroupToDB);
 		System.out.println("Groups added to School database");
 	}
 

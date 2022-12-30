@@ -1,26 +1,27 @@
 package com.foxminded.javaspring.schoolspringjdbc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
+import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
 @Component
 @ConditionalOnProperty(prefix = "application", name = "env", havingValue = "prod")
 public class ApplicationStartupRunner implements CommandLineRunner {
 	
-	private Controller controller;
+	private DBGeneratorService dbGeneratorService;
 
-	public ApplicationStartupRunner(Controller controller) {
-		super();
-		this.controller = controller;
+	@Autowired
+	public ApplicationStartupRunner(DBGeneratorService dbGeneratorService) {
+		this.dbGeneratorService = dbGeneratorService;
 	}
 	
 	@Override
 	public void run(String... args) throws Exception {
-		controller.startUp();
-		controller.menu();
+		dbGeneratorService.startUp();
+		dbGeneratorService.menu();
 	}
 	
 	

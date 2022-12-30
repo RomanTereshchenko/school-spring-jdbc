@@ -1,4 +1,4 @@
-package com.foxminded.javaspring.schoolspringjdbc.generator;
+package com.foxminded.javaspring.schoolspringjdbc.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 
 @Service
-public class StudentGenerator {
+public class StudentGeneratorService {
 
-	private Random random = new Random();
+	private Random random;
 	private int nextUnassignedStudentID = 0;
 	private List<String> studentFirstNames = Arrays.asList("Lexi", "Elouise", "Wilbur", "Glenda", "Judah", "Salahuddin",
 			"Juliet", "Tanner", "Luella", "Enid", "Hadiya", "Rares", "Bryan", "Patsy", "Eshan", "Lester", "Bentley",
@@ -24,6 +24,11 @@ public class StudentGenerator {
 	private List<String> studentLastNames = Arrays.asList("Ferry", "Buck", "Moody", "Craft", "Ridley", "Aguilar",
 			"Garrett", "Peralta", "Mcknight", "O'Quinn", "Simons", "Kelley", "Trejo", "Dougherty", "Palacios", "Murphy",
 			"Gordon", "Mcgee", "Strong", "Philip");
+
+	@Autowired
+	public StudentGeneratorService(Random random) {
+		this.random = random;
+	}
 
 	public List<Student> generateNStudents(int countToGenerate) {
 		List<Student> studentsLocal = new ArrayList<>();
@@ -42,8 +47,8 @@ public class StudentGenerator {
 	}
 
 	public void assignAllGroupsToAllItsStudents() {
-		while (nextUnassignedStudentID < Controller.students.size()) {
-			IntStream.rangeClosed(1, Controller.groups.size()).forEach(this::assignGroupToStudents);
+		while (nextUnassignedStudentID < DBGeneratorService.students.size()) {
+			IntStream.rangeClosed(1, DBGeneratorService.groups.size()).forEach(this::assignGroupToStudents);
 		}
 		System.out.println("Students assigned with groups");
 	}
@@ -52,15 +57,15 @@ public class StudentGenerator {
 		int limitOfStudentsInGroup = ((random.nextInt(20)) + 10);
 		int numberOfStudentsInGroup = 0;
 		while ((numberOfStudentsInGroup < limitOfStudentsInGroup)
-				&& (nextUnassignedStudentID < Controller.students.size())) {
-			Controller.students.get(nextUnassignedStudentID).setGroupID(groupID);
+				&& (nextUnassignedStudentID < DBGeneratorService.students.size())) {
+			DBGeneratorService.students.get(nextUnassignedStudentID).setGroupID(groupID);
 			numberOfStudentsInGroup++;
 			nextUnassignedStudentID++;
 		}
 	}
 
 	public void assignCoursesToAllStudents() {
-		IntStream.rangeClosed(0, (Controller.students.size() - 1)).forEach(this::assignCoursesToOneStudent);
+		IntStream.rangeClosed(0, (DBGeneratorService.students.size() - 1)).forEach(this::assignCoursesToOneStudent);
 		System.out.println("Students assigned with lists of courses");
 	}
 
@@ -69,17 +74,17 @@ public class StudentGenerator {
 		int numberOfCoursesLimit = (random.nextInt(maxNumberOfCourses - 1) + 1);
 		int numberOfAssignedCourses = 1;
 		ArrayList<Integer> courseIDs = new ArrayList<>();
-		for (int i = 0; i < Controller.courses.size(); i++)
+		for (int i = 0; i < DBGeneratorService.courses.size(); i++)
 			courseIDs.add(i);
 		Collections.shuffle(courseIDs);
 		int randomCourseIDIndex = 0;
 		List<Course> coursesOfStudent = new ArrayList<>();
 		while (numberOfAssignedCourses <= numberOfCoursesLimit) {
-			coursesOfStudent.add(Controller.courses.get(courseIDs.get(randomCourseIDIndex)));
+			coursesOfStudent.add(DBGeneratorService.courses.get(courseIDs.get(randomCourseIDIndex)));
 			randomCourseIDIndex++;
 			numberOfAssignedCourses++;
 		}
-		Controller.students.get(nextStudentID).setCourses(coursesOfStudent);
+		DBGeneratorService.students.get(nextStudentID).setCourses(coursesOfStudent);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.foxminded.javaspring.schoolspringjdbc;
+package com.foxminded.javaspring.schoolspringjdbc.daoTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,18 +10,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcCourseDao;
-import com.foxminded.javaspring.schoolspringjdbc.model.Course;
+import com.foxminded.javaspring.schoolspringjdbc.dao.JdbcGroupDao;
+import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 
 @SpringBootTest
-class JdbcCourseDaoTest {
+class JdbcGroupDaoTest {
 
-	private JdbcCourseDao jdbcCourseDao;
+	private JdbcGroupDao jdbcGroupDao;
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public JdbcCourseDaoTest(JdbcCourseDao jdbcCourseDao, JdbcTemplate jdbcTemplate) {
-		this.jdbcCourseDao = jdbcCourseDao;
+	public JdbcGroupDaoTest(JdbcGroupDao jdbcGroupDao, JdbcTemplate jdbcTemplate) {
+		this.jdbcGroupDao = jdbcGroupDao;
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
@@ -43,12 +43,23 @@ class JdbcCourseDaoTest {
 	}
 
 	@Test
-	void testAddCourseToDB() {
-		jdbcCourseDao.addCourseToDB(new Course(1, "TestCourse"));
-		Course course = jdbcTemplate.queryForObject("SELECT * FROM school.courses c WHERE c.course_name = ?",
-				BeanPropertyRowMapper.newInstance(Course.class), "TestCourse");
-		assertNotNull(course);
-		assertEquals("TestCourse", course.getCourseName());
+	void testAddGroupToDB() {
+		jdbcGroupDao.addGroupToDB(new Group(1, "tt-00"));
+		Group group = jdbcTemplate.queryForObject(
+				"SELECT g.group_id AS groupID, g.group_name as groupName FROM school.groups g WHERE group_name = ?",
+				BeanPropertyRowMapper.newInstance(Group.class), "tt-00");
+		assertNotNull(group);
+		assertEquals("tt-00", group.getGroupName());
+	}
+
+	@Test
+	void selectGroupsByStudentsCount_ReturnsGropWithSelectedStudentCount() {
+		jdbcGroupDao.addGroupToDB(new Group(1, "tt-00"));
+		jdbcTemplate.update(
+				"INSERT INTO school.students (group_id, first_name, last_name) VALUES (1, 'TestFName1', 'TestLName1');");
+		jdbcTemplate.update(
+				"INSERT INTO school.students (group_id, first_name, last_name) VALUES (1, 'TestFName2', 'TestLName2');");
+		assertEquals("tt-00", jdbcGroupDao.selectGroupsByStudentsCount(2).get(0).getGroupName());
 	}
 
 }

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.foxminded.javaspring.schoolspringjdbc.controller.Controller;
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
+import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
 @Repository
 public class JdbcCourseDao {
@@ -19,7 +19,7 @@ public class JdbcCourseDao {
 	
 	public void addAllCoursesToDB() {
 
-		Controller.courses.forEach(this::addCourseToDB);
+		DBGeneratorService.courses.forEach(this::addCourseToDB);
 		System.out.println("Courses added to School database");
 	}
 
