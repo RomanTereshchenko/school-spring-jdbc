@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CourseGeneratorService {
 
+//	2.4
 	public final List<String> courseNames = Arrays.asList("Mathematics", "Science", "Health", "Handwriting", "Art",
 			"Music", "Leadership", "Speech", "English", "Algebra");
 
