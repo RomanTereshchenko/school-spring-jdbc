@@ -6,11 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.javaspring.schoolspringjdbc.model.Group;
 import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Repository
+@Slf4j
 public class JdbcGroupDao {
 
 	private JdbcTemplate jdbcTemplate;
@@ -20,9 +24,10 @@ public class JdbcGroupDao {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	@Transactional
 	public void addAllGroupsToDB() {
 		DBGeneratorService.groups.forEach(this::addGroupToDB);
-		System.out.println("Groups added to School database");
+		log.info("Groups added to School database");
 	}
 
 	public int addGroupToDB(Group group) {
