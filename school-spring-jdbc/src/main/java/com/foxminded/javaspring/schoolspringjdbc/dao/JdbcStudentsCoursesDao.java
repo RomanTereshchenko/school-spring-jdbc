@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.javaspring.schoolspringjdbc.model.Course;
 import com.foxminded.javaspring.schoolspringjdbc.model.StudentCourse;
 import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Repository
+@Slf4j
 public class JdbcStudentsCoursesDao {
 
 	private JdbcTemplate jdbcTemplate;
@@ -21,10 +25,10 @@ public class JdbcStudentsCoursesDao {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	@Transactional
 	public void addStudentsCoursesAssignmentsToDB() {
 		DBGeneratorService.students.forEach(student -> addOneStudentCoursesAssignmentsToDB(student.getStudentID()));
-
-		System.out.println("Students' assignments to courses added to School database");
+		log.info("Students' assignments to courses added to School database");
 	}
 
 	void addOneStudentCoursesAssignmentsToDB(int studentID) {

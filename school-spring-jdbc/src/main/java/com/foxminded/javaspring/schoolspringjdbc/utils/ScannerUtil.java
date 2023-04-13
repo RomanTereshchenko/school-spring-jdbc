@@ -22,9 +22,11 @@ public class ScannerUtil {
 		return scannedInt;
 	}
 
-	public String scanString() { // Needed because Scanner is a final class, therefore 1. It can't be mocked. 2.
-									// The instance of it can't be used by two different objects (scannerUtil and
-									// studentService in StudentServiceTest).
+	public String scanString() {
 		return scan.nextLine();
+	}
+
+	public void closeScan() {
+		scan.close();
 	}
 }

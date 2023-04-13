@@ -6,11 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.javaspring.schoolspringjdbc.model.Student;
 import com.foxminded.javaspring.schoolspringjdbc.service.DBGeneratorService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Repository
+@Slf4j
 public class JdbcStudentDao {
 
 	private JdbcTemplate jdbcTemplate;
@@ -20,9 +24,10 @@ public class JdbcStudentDao {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	@Transactional
 	public void addStudentsToDB() {
 		DBGeneratorService.students.forEach(this::addStudentToDB);
-		System.out.println("Students added to School database");
+		log.info("Students added to School database");
 	}
 
 	public int addStudentToDB(Student student) {
@@ -34,13 +39,14 @@ public class JdbcStudentDao {
 		return jdbcTemplate.update("DELETE FROM school.students WHERE student_id = ?;", studentID);
 	}
 
+	@Transactional
 	public void addGroupIDToAllTheirStudentsInDB() {
 		for (Student student : DBGeneratorService.students) {
 			if (student.getGroupID() != 0) {
 				addGroupIDToStudentInDB(student);
 			}
 		}
-		System.out.println("Students assigned to groups in School database");
+		log.info("Students assigned to groups in School database");
 	}
 
 	public int addGroupIDToStudentInDB(Student student) {
